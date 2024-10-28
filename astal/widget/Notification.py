@@ -33,7 +33,7 @@ class Notification(Gtk.Box):
 
         title = Astal.Label()
         title_text = self.notification.get_summary() or self.notification.get_app_name()
-        title.set_markup(f'<span font="14" weight="bold">{title_text}</span>')
+        title.set_markup(f'<span font="12" weight="bold">{title_text}</span>')
         title.set_halign(Gtk.Align.START)
         header.pack_start(title, True, True, 0)
 
