@@ -23,8 +23,9 @@ class Notification(Gtk.Box):
 
         notification_container = Astal.Box(spacing=10)
         notification_container.pack_start(self.create_text_container(), True, True, 0)
-        notification_container.pack_start(self.set_close_button(notification_container), False, False, 0)
+        notification_container.pack_start(self.create_close_button(notification_container), False, False, 0)
 
+        self.set_timeout(notification_container)
         self.pack_end(notification_container, False, False, 0)
         self.show_all()
 
@@ -59,9 +60,9 @@ class Notification(Gtk.Box):
 
         return text_container
 
-    def set_close_button(self, instance):
+    def create_close_button(self, instance):
         close_button = Astal.Button()
-        close_button.connect("clicked", lambda x: instance.destroy())
+        close_button.connect("clicked", lambda _: self.dismiss_notification(instance))
         close_button.add(Astal.Icon(icon='window-close-symbolic'))
         return close_button
 
@@ -69,6 +70,19 @@ class Notification(Gtk.Box):
         timestamp = self.notification.get_time()
         dt_object = datetime.fromtimestamp(timestamp)
         return dt_object.strftime('%H:%M')
+
+    def set_timeout(self, widget):
+        timeout = 5000
+        if (t_out := self.notification.get_expire_timeout()) != -1:
+            timeout = abs(t_out)
+
+        widget.timeout_id = GLib.timeout_add(timeout, self.dismiss_notification, widget)
+
+    def dismiss_notification(self, widget):
+        if widget.timeout_id:
+            GLib.source_remove(widget.timeout_id)
+
+        widget.destroy()
 
 
 class NotifWindow(Astal.Window):
