@@ -45,7 +45,7 @@ class Notification(Gtk.Box):
         return header
 
     def create_text_container(self):
-        text_container = Astal.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        text_container = Astal.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         text_container.pack_start(self.create_header(), True, True, 0)
 
@@ -53,10 +53,17 @@ class Notification(Gtk.Box):
             separator = Gtk.Separator(orientation=Gtk.Orientation.HORIZONTAL)
             text_container.pack_start(separator, True, True, 0)
 
+            content_container = Gtk.ScrolledWindow()
+            content_container.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+            content_container.set_min_content_height(80)
+
             content = Astal.Label(label=content_text)
             content.set_halign(Gtk.Align.START)
             content.set_line_wrap(True)
-            text_container.pack_start(content, True, True, 0)
+
+            content_container.add(content)
+            text_container.pack_start(content_container, True, True, 0)
+
 
         return text_container
 
