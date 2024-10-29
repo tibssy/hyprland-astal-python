@@ -109,7 +109,6 @@ window.Bar {
 .Notification {
     background-color: transparent;
     margin: 3px;
-    min-width: 400px;
 }
 
 .Notification > box {
@@ -119,18 +118,13 @@ window.Bar {
     border: 1px solid #A6E3A1;
     margin: 2px;
 
-
-
     & > box {
         padding: 10px 6px;
     }
 
-    & > box:hover {
-        background-color: #303030;
-    }
-
     & label {
         color: #A6E3A1;
+        margin-right: 10px;
     }
 
     & button {
@@ -140,12 +134,12 @@ window.Bar {
         font-size: 22px;
     }
 
+    & button:hover {
+        background-color: #87f47c;
+    }
+
     & separator {
         background-color: #acc1aa4d;
     }
 
 }
-
-
-
-

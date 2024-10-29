@@ -14,6 +14,7 @@ class Notification(Gtk.Box):
     def __init__(self) -> None:
         super().__init__(visible=True, orientation=Gtk.Orientation.VERTICAL, spacing=4)
         self.notification = None
+        self.is_hovered = False
         Astal.widget_set_class_names(self, ["Notification"])
         self.notifd = Notifd.get_default()
         self.notifd.connect("notified", self.on_notified)
@@ -21,13 +22,21 @@ class Notification(Gtk.Box):
     def on_notified(self, _, id, *args):
         self.notification = self.notifd.get_notification(id)
 
-        notification_container = Astal.Box(spacing=10)
-        notification_container.pack_start(self.create_text_container(), True, True, 0)
+        notification_container = Gtk.Box(spacing=10)
+        notification_container.set_size_request(460, -1)
+        notification_container.pack_start(self.create_text_container(notification_container), True, True, 0)
         notification_container.pack_start(self.create_close_button(notification_container), False, False, 0)
+        notification_container.connect("motion-notify-event", self.reset_timeout)
 
         self.set_timeout(notification_container)
         self.pack_end(notification_container, False, False, 0)
         self.show_all()
+
+    def reset_timeout(self, widget, event):
+        if hasattr(widget, 'timeout_id') and widget.timeout_id:
+            GLib.source_remove(widget.timeout_id)
+            # widget.timeout_id = None
+            self.set_timeout(widget)
 
     def create_header(self):
         header = Astal.Box()
@@ -44,7 +53,7 @@ class Notification(Gtk.Box):
 
         return header
 
-    def create_text_container(self):
+    def create_text_container(self, widget):
         text_container = Astal.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         text_container.pack_start(self.create_header(), True, True, 0)
@@ -55,7 +64,8 @@ class Notification(Gtk.Box):
 
             content_container = Gtk.ScrolledWindow()
             content_container.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
-            content_container.set_min_content_height(80)
+            content_container.set_min_content_height(100)
+            content_container.connect("scroll-event", lambda _, event: self.reset_timeout(widget, event))
 
             content = Astal.Label(label=content_text)
             content.set_halign(Gtk.Align.START)
@@ -64,12 +74,11 @@ class Notification(Gtk.Box):
             content_container.add(content)
             text_container.pack_start(content_container, True, True, 0)
 
-
         return text_container
 
-    def create_close_button(self, instance):
+    def create_close_button(self, widget):
         close_button = Astal.Button()
-        close_button.connect("clicked", lambda _: self.dismiss_notification(instance))
+        close_button.connect("clicked", lambda _: self.dismiss_notification(widget))
         close_button.add(Astal.Icon(icon='window-close-symbolic'))
         return close_button
 
