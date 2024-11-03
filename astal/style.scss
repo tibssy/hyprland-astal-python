@@ -1,4 +1,4 @@
-$bg: #212223;
+$bg: #303030;
 $fg: #f1f1f1;
 $accent: #a4f737;
 $radius: 6px;
@@ -107,15 +107,13 @@ window.Bar {
 }
 
 .Notification {
-    background-color: transparent;
     margin: 3px;
 }
 
 .Notification > box {
     background-color: $bg;
-    border-radius: $radius;
+    border-radius: $radius + 4;
     padding: 0 0 0 6px;
-    border: 1px solid #A6E3A1;
     margin: 2px;
 
     & > box {
@@ -123,13 +121,12 @@ window.Bar {
     }
 
     & label {
-        color: #A6E3A1;
         margin-right: 10px;
     }
 
     & button {
         background-color: #A6E3A1;
-        border-radius: 0 $radius - 2 $radius - 2 0;
+        border-radius: 0 $radius + 2 $radius + 2 0;
         color: #000000;
         font-size: 22px;
     }

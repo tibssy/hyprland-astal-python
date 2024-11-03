@@ -20,7 +20,7 @@ class App(Astal.Application):
         AstalIO.Process.execv(["sass", scss, css])
         self.apply_css(css, True)
 
-        monitor_index = 1
+        monitor_index = 0
 
         if monitor_index in range(len(monitors := self.get_monitors())):
             self.add_window(Bar(monitors[monitor_index]))

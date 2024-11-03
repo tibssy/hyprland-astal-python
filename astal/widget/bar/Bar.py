@@ -13,11 +13,6 @@ from gi.repository import (
     Gdk,
     GLib,
     GObject,
-    AstalBattery as Battery,
-    AstalWp as Wp,
-    AstalNetwork as Network,
-    AstalTray as Tray,
-    AstalMpris as Mpris,
     AstalHyprland as Hyprland,
 )
 

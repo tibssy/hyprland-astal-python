@@ -23,7 +23,7 @@ class Notification(Gtk.Box):
         self.notification = self.notifd.get_notification(id)
 
         notification_container = Gtk.Box(spacing=10)
-        notification_container.set_size_request(460, -1)
+        notification_container.set_size_request(400, -1)
         notification_container.pack_start(self.create_text_container(notification_container), True, True, 0)
         notification_container.pack_start(self.create_close_button(notification_container), False, False, 0)
         notification_container.connect("motion-notify-event", self.reset_timeout)
@@ -43,6 +43,9 @@ class Notification(Gtk.Box):
 
         title = Astal.Label()
         title_text = self.notification.get_summary() or self.notification.get_app_name()
+        if len(title_text) > 30:
+            title_text = f'{title_text[:27]}...'
+
         title.set_markup(f'<span font="12" weight="bold">{title_text}</span>')
         title.set_halign(Gtk.Align.START)
         header.pack_start(title, True, True, 0)
@@ -67,7 +70,8 @@ class Notification(Gtk.Box):
             content_container.set_min_content_height(100)
             content_container.connect("scroll-event", lambda _, event: self.reset_timeout(widget, event))
 
-            content = Astal.Label(label=content_text)
+            content = Astal.Label()
+            content.set_markup(content_text)
             content.set_halign(Gtk.Align.START)
             content.set_line_wrap(True)
 
@@ -88,7 +92,7 @@ class Notification(Gtk.Box):
         return dt_object.strftime('%H:%M')
 
     def set_timeout(self, widget):
-        timeout = 5000
+        timeout = 8000
         if (t_out := self.notification.get_expire_timeout()) != -1:
             timeout = abs(t_out)
 
